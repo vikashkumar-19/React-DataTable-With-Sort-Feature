@@ -1,3 +1,7 @@
+# This React- DataTable have features for sorting table based on any column you want.
+You can even select any row and change color to yellow(default)
+
+
 # Getting Started with Create React App
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
