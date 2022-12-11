@@ -58,11 +58,7 @@ export function TableComponent(props = {}) {
       header: true,
       download: true,
       complete: (result) => {
-        let d = result.data
-        for(var i=0;i<d.length;i++){
-          d[i].sr=i;
-        };
-        setCSVData(d);
+        setCSVData(result.data);
       },
     });
   }
@@ -164,7 +160,6 @@ function RowComponent(props = {}) {
       <td className="d-none d-md-table-cell">{props.data.area}</td>
       <td className="d-none d-md-table-cell">{props.data.show}</td>
       <td className="d-none d-md-table-cell">{props.data.edit}</td>
-      <td className="d-none d-md-table-cell">{props.data.sr}</td>
     </tr>
   );
 }
