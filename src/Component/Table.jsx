@@ -31,7 +31,6 @@ export function TableComponent(props = {}) {
   const [CSVData, setCSVData] = useState([]);
   const [currentSort, setCurrentSort] = useState("default");
   const [currentColumn, setCurrentColumn] = useState("default");
-  const [activeRow, setactiveRow] =  useState(new Map());; 
   
   var titles = [
     "id",
@@ -59,24 +58,22 @@ export function TableComponent(props = {}) {
       header: true,
       download: true,
       complete: (result) => {
-        setCSVData(result.data);
+        let d = result.data
+        for(var i=0;i<d.length;i++){
+          d[i].sr=i;
+        };
+        setCSVData(d);
       },
     });
   }
 
-  function changeRowColor(row){
-	let cur = activeRow.get(row);
-	cur = (cur+1)%2;
-	setactiveRow(activeRow.set(row,cur));
-  }
+
+
   useEffect(() => {
     parseCSVData();
-	for(var i=0;i<CSVData.length;i++){
-		setactiveRow(activeRow.set(CSVData[i].id,0));
-	}
   }, []);
+
   
-  console.log(currentColumn, currentSort);
   return (
     <table className="table">
       <thead className="">
@@ -134,7 +131,7 @@ export function TableComponent(props = {}) {
         {[...CSVData]
           .sort(sortTable(currentColumn, currentSort))
           .map(function (obj, ind) {
-            return <RowComponent data={obj} key={ind} active={(activeRow.get(obj.id)===1)} onClick={()=>{changeRowColor(obj.id)}}/>;
+            return <RowComponent data={obj} key={ind}/>;
           })}
       </tbody>
     </table>
@@ -142,21 +139,9 @@ export function TableComponent(props = {}) {
 }
 
 function RowComponent(props = {}) {
+  const [activeRow, setactiveRow]=useState(false);
   return (
-    <tr className={props.active? "need-color-change":""}>
-      {/* <td className="d-md-none d-table-cell">
-        <div className="card">
-          <div className="card-body">
-            <strong className="card-title">{props.description}</strong>
-            <p className="card-text">
-              UPC {props.upc}
-              <br />
-              {props.isn && `ISN ${props.isn}`}
-            </p>
-            <button className="btn btn-secondary btn-block">Action</button>
-          </div>
-        </div>
-      </td> */}
+    <tr style={{backgroundColor:activeRow?"#ffffaa":"white"}} onClick={()=>{setactiveRow(!activeRow);}}>
       <td className=" d-md-table-cell">{props.data.id}</td>
       <td className="d-md-table-cell">{props.data.first_name}</td>
       <td className="d-md-table-cell">{props.data.last_name}</td>
@@ -179,6 +164,7 @@ function RowComponent(props = {}) {
       <td className="d-none d-md-table-cell">{props.data.area}</td>
       <td className="d-none d-md-table-cell">{props.data.show}</td>
       <td className="d-none d-md-table-cell">{props.data.edit}</td>
+      <td className="d-none d-md-table-cell">{props.data.sr}</td>
     </tr>
   );
 }
